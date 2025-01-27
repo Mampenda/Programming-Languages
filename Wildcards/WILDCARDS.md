@@ -43,7 +43,11 @@ With regex, you can define patterns to search, match, and manipulate text effici
 
 **Qualifiers**
 
-| Pattern  | Explanation                  | Example              |
-| -------- | ---------------------------- | -------------------- |
-| `a*a+a?` | 0 or more, 1 or more, 0 or 1 | `a*a+` matches `aaa` |
-| `a{5}`   | Exactly five occurrences     | `a{5}` matches `a    |
+| Pattern    | Explanation                       | Example                           |
+| ---------- | --------------------------------- | --------------------------------- |
+| `a* a+ a?` | 0 or more, 1 or more, 0 or 1      | `a* a+` matches `aaa`             |
+| `a{5}`     | Exactly five occurrences          | `a{5}` matches `aaaaa`            |
+| `a{2,}`    | Two or more occurrences           | `a{2,}` matches `aa`, `aaa`       |
+| `a{1,3}`   | Between one and three occurrences | `a{1,3}` matches `a`, `aa`, `aaa` |
+| `a+?`      | Match as few as possible          | `a+?` matches `a` in `aa`         |
+| `ab\|cd`   | Match `ab` or `cd`                | `ab\|cd`matches`ab`or`cd`         |
