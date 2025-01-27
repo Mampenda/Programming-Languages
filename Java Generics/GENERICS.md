@@ -30,7 +30,6 @@ public static <T extends Comparable<T>> T min (T a, T b) {
 public static <T extends Comparable<T>> T min(T a, T b) {
     return (a.compareTo(b) < 0) ? a : b;
 }
-
 ```
 
 ## Basic Generig Interfaces/Classes
@@ -39,12 +38,11 @@ In Java, interfaces and classes can be declared with type parameters, which are 
 
 ```java
 // Built-In Java Generics (List & ArrayList)
-List<String> words = new ArrayList<>();  // Declaring a variable with type parameter
+List<String> words = new ArrayList<>();
 words.add("Java");
 words.add("Generics");
 
-System.out.println(words.get(0));  // Output: Java
-
+System.out.println(words.get(0));
 ```
 
 Before generics were introduced, Java used raw types, meaning classes like List or ArrayList were used without specifying a type, leading to potential runtime errors due to unchecked type casting.
@@ -156,3 +154,54 @@ List<Object> objs = Lists.<Object>toList(1, "two");
 ```
 
 In this case, `1` (an `Integer`) and `"two"` (a `String`) are both `Object` types, but they also implement different interfaces like `Serializable` and `Comparable`. Java can't automatically determine which type to infer, and so explicit typing is required.
+
+### Subtyping
+
+Subtyping is an essential feature in object-oriented programming, where one type is considered a subtype of another if it's related through an extends or implements clause.
+
+Examples of subtypes:
+
+| Subtype         | Supertype       |
+| --------------- | --------------- |
+| `Integer`       | `Number`        |
+| `Double`        | `Number`        |
+| `ArrayList<E>`  | `List<E>`       |
+| `List<E>`       | `Collection<E>` |
+| `Collection<E>` | `Iterable<E>`   |
+
+**Transitivity**: Subtyping is transitive. If `A` is a subtype of `B`, and `B` is a subtype of `C`, then `A` is a subtype of `C`.
+
+**Reflexivity**: Every type is a subtype of itself.
+
+#### The Substitution Principle
+
+    Values of any subtype can be used wherever the supertype is expected.
+
+```java
+interface Collection<E> {
+    boolean add(E element);
+}
+List<Number> numbers = new ArrayList<>();
+numbers.add(2);    // OK: Integer is a subtype of Number
+numbers.add(3.14); // OK: Double is a subtype of Number
+```
+
+#### Generics Complications
+
+Generics introduce a challenge in subtyping, which can make it non-trivial:
+
+`List<Integer>` is _not_ a subtype of `List<Number>`
+`List<Number>`is _not_ a subtype of `List<Integer>`
+
+The type safety provided by generics ensures that the list types are strictly enforced (i.e., you can't mix types).
+
+Arrays: Despite the challenges with generics, arrays work differently:
+
+`Integer[]` is a subtype of `Number[]`
+
+**_Key Takeaways:_**
+
+**Generics are not covariant: `List<Integer>` is not a subtype of `List<Number>`**
+**Arrays are covariant: `Integer[]` is a subtype of `Number[]`**
+
+Subtyping works well in non-generic types but becomes more complex when dealing with generics.
