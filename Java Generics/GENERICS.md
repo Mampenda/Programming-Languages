@@ -2,11 +2,7 @@
 
 These generics functions will compute the minimum of two numbers.
 
-_**Based on**_:
-
-> Naftalin, Maurice, and Philip Wadler. _Java Generics and Collections_. O’Reilly Media, 2006.
->
-> Dmitry Jemerov and Svetlana Isakova. _Kotlin in Action_. Manning Publications, 2017.
+**C++**
 
 ```c++
 // Pass parameters as const T&: Avoids unnecessary copies for non-primitive types (e.g., std::string or custom objects).
@@ -15,6 +11,8 @@ T min(const T& a, const T& b) {
     return (a < b) ? a : b;
 }
 ```
+
+**Java**
 
 ```java
 // Uses if-else
@@ -34,18 +32,17 @@ public static <T extends Comparable<T>> T min(T a, T b) {
 
 ## Basic Generig Interfaces/Classes
 
-In Java, interfaces and classes can be declared with type parameters, which are specified using angle brackets (`<>`). These parameters should be provided both when declaring variables and when creating new instances of a class.
+In Java, interfaces and classes can be declared with _type parameters_, which are specified using angle brackets (`<>`). These parameters should be provided both when declaring variables and when creating new instances of a class.
 
 ```java
 // Built-In Java Generics (List & ArrayList)
 List<String> words = new ArrayList<>();
 words.add("Java");
 words.add("Generics");
-
 System.out.println(words.get(0));
 ```
 
-Before generics were introduced, Java used raw types, meaning classes like List or ArrayList were used without specifying a type, leading to potential runtime errors due to unchecked type casting.
+Before generics were introduced, Java used _raw types_, meaning classes like `List` or `ArrayList` were used without specifying a type, leading to potential runtime errors due to unchecked type casting.
 
 ```java
 import java.util.*;
@@ -77,6 +74,7 @@ public class GenericsExample {
         // Using generics for type safety
         List<String> words = new ArrayList<>();  // Generic type specified
         words.add("Hello");
+        words.add("World");
 
         String str = words.get(0);  // ✅ No explicit casting needed
         System.out.println(str);
@@ -90,11 +88,12 @@ import java.util.*;
 public class GenericMethodExample {
     // Generic method that converts an array of any type T to a List<T>
     public static <T> List<T> toList(T[] array) {
-        return new ArrayList<>(Arrays.asList(array)); // Optimized conversion
+        return new ArrayList<>(Arrays.asList(array));
     }
 
+    // Example usage with different data types
     public static void main(String[] args) {
-        // Example usage with different data types
+
         String[] stringArray = {"Java", "Generics", "Optimization"};
         List<String> stringList = toList(stringArray);
         System.out.println(stringList); // Output: [Java, Generics, Optimization]
@@ -106,9 +105,9 @@ public class GenericMethodExample {
 }
 ```
 
-### Varargs
+### Variable Arguments / Varargs
 
-The major optimization here is to leverage varargs to allow a more convenient and concise method invocation. With varargs (T... array), you can pass multiple arguments of the same type directly to the method without having to explicitly wrap them into an array.
+The major optimization here is to leverage `varargs` to allow a more convenient and concise method invocation. With `varargs (T... array)`, you can pass multiple arguments of the same type directly to the method without having to explicitly wrap them into an array.
 
 ```java
 import java.util.*;
@@ -122,15 +121,15 @@ public class MyListUtils {
     public static void main(String[] args) {
         // Example usage with varargs (No need to pack into an array)
         List<Integer> ints = MyListUtils.toList(1, 2, 3);
-        List<String> words = MyListUtils.toList("hi", "hello");
+        List<String> words = MyListUtils.toList("Hello", "World");
 
         System.out.println(ints);   // Output: [1, 2, 3]
-        System.out.println(words);  // Output: [hi, hello]
+        System.out.println(words);  // Output: [Hello, World]
     }
 }
 ```
 
-When calling the method `toList`, we can rely on type inference for the generic parameter, which means we don’t always have to specify the type explicitly.
+When calling the method `toList`, we can rely on _type inference_ for the generic parameter, which means we don’t always have to specify the type explicitly.
 
 However, explicitly specifying the type parameter can sometimes be necessary to resolve ambiguity or to provide more clarity:
 
@@ -157,7 +156,7 @@ In this case, `1` (an `Integer`) and `"two"` (a `String`) are both `Object` type
 
 ### Subtyping
 
-Subtyping is an essential feature in object-oriented programming, where one type is considered a subtype of another if it's related through an extends or implements clause.
+Subtyping is an essential feature in object-oriented programming, where one type is considered a subtype of another if it's related through an `extends` or `implements` clause.
 
 Examples of subtypes:
 
@@ -195,7 +194,7 @@ Generics introduce a challenge in subtyping, which can make it non-trivial:
 
 The type safety provided by generics ensures that the list types are strictly enforced (i.e., you can't mix types).
 
-Arrays: Despite the challenges with generics, arrays work differently:
+But despite the challenges with generics, arrays work differently:
 
 `Integer[]` is a subtype of `Number[]`
 
