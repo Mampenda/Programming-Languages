@@ -82,8 +82,8 @@ The third example is permitted because:
 
 ## The GET and PUT Principle
 
-    When you get values out of a structure, use the `extends` wildcard.
-    When you put values in to a structure, use the `super` wildcard.
+    When you GET values out of a structure, use the `extends` wildcard.
+    When you PUT values in to a structure, use the `super` wildcard.
     When you do both, do not use a wildcard.
 
 The `copy( List<? super T> destination, List<? extends T> source)` method from example 2 gets values out of the source list, and puts them into the destination list.
@@ -110,7 +110,7 @@ static void printAll(List<?> list) {
 
 The wildcard `<?>` is an abbreviation of `? extends Object>` and it is also a _wildcard capture_.
 
-## The Wildcard capture
+## The Wildcard Capture
 
 Wildcard capture occurs when a method infers the actual type of a wildcard (`<?>`) at runtime.
 Consider `Collections.reverse()`, which reverses a list of any type:
@@ -229,6 +229,101 @@ graph BT;
 `C<? extends Dog>` is a subtype of `C<? extends Animal>`.
 `C<? super Animal>` is a subtype of `C<? super Dog>`.
 
+```java
+// Using wildcards vs. not using wildcards
+import java.util.List;
+import java.util.ArrayList;
+
+public class Main {
+  public static Number sum_with_extends(List<? extends Number> list) {
+    double res = 0;
+    for (Number elem : list) {
+      res += elem.doubleValue();
+    }
+    return res;
+  }
+
+  public static Number sum_without_extends(List<Number> list) {
+    double res = 0;
+    for (Number elem : list) {
+      res += elem.doubleValue();
+    }
+    return res;
+  }
+
+  public static void main(String[] args) {
+    List<Integer> list_A = new ArrayList<Integer>();
+    list_A.add(1);
+    list_A.add(2);
+    list_A.add(3);
+    System.out.println(sum_with_extends(list_A));    // ✅ OK: `List<Integer>` is a subtype of `List<? extends Number>`
+    System.out.println(sum_without_extends(list_A)); // ❌ Error: `List<Integer>` is NOT a subtype of `List<Number>`
+  }
+}
+```
+
+## Bounds
+
+A generic type parameter (e.g., `<E>`) does not automatically inherit methods from any class.
+
+```java
+// Declared *bound* that object, E, needs to be comparable (inherits compareTo())
+public static <E extends Comparable<E>> void print(List<E> a, E threshold) {
+    for (E element : a) {
+    if (e.compareTo(threshold) < 0) {
+      System.out.println(e.toString());
+    }
+  }
+}
+
+// ❌ ERROR: E might not have compareTo()
+public static <E> void print(List<E> a, E threshold) {/* CODE */}
+```
+
+### Bounds vs. Wildcards
+
+Bounds for type variables are indicated by keyword `extends`, while bounds for wildcards are indicated by both `extends` and `super`.
+
+```java
+// Use extend to get values from collection
+// and super to put values into compareTo().
+public static <T extends Comparable<? super T>> T max(
+  Collection<? extends T> collection) {/* CODE */}
+```
+
+### Recursive Bounds
+
+Consider the Subject-Observer Pattern
+
+```java
+// Type variables reference themselves in their bounds
+public class Observable<S extends Observable<S, O, A>,
+                        O extends Observer<S, O, A>,
+                        A> {/* CODE */}
+
+public interface Observable<S extends Observable<S, O, A>,
+                            O extends Observer<S, O, A>,
+                            A> {/* CODE */}
+```
+
+### Bounds for Type Variables (continuing)
+
+In order to maximize reuse of methods, signatures should be as general as
+possible, so if you can replace a type parameter by a wildcard, then do so.
+
+```java
+// Without wildcards
+public static <T extends Comparable<T>>T max(Collection<T> c) {/* CODE */}
+// With wildcards
+public static <T extends Comparable<? super T>>T max(Collection<T> c) {/* CODE */}
+```
+
+#### To know when to use wildcards, we, again follow the GET and PUT Principle:
+
+    When you GET values out of a structure, use the `extends` wildcard.
+    When you PUT values in to a structure, use the `super` wildcard.
+    When you do both, do not use a wildcard.
+
 #### Example 5
 
 Consider the two ways of creating a generic method which converts an array to a list:
@@ -244,7 +339,7 @@ public static <T> List<T> toList(T[] array) {
 }
 ```
 
-#### Example 3
+#### Example
 
 ```java
 import java.io.*;
