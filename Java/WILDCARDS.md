@@ -326,6 +326,37 @@ public static <T extends Comparable<? super T>>T max(Collection<T> c) {/* CODE *
 
 ### Multiple Bounds for Generic Parameters
 
+```java
+// A type variable can extend multiple interfaces, but only one class
+// Becasue Java doesn't support multiple inheritance for classes
+public static <S extends Readable & Closeable, T extends Appendable & Closeable>
+void copy(S source, T target, int size) {/* CODE */}
+
+// The class must be listed first, but the interfaces can come in whatever order
+class SortedList<T extends Comparable<T> & Serializable> { ... }
+```
+
+```haskell
+{-
+The Idea is similar to multiple class constraints in Haskell.
+This code takes a value x and a list xs, and returns a list of strings where the elements are less than x.
+-}
+f :: (Show a, Ord a) => a -> [a] -> [String]
+f x xs = map show (filter (<x) xs)
+{-
+f 5 [3, 7, 2, 9, 1]
+Output: ["3", "2", "1"]
+-}
+```
+
+### Multiple Bounds (continuing)
+
+```java
+// Some classes the Java standard library use multiple bounds
+public static <T extends Object & Comparable<? super T>> T max
+(Collection<? extends T> coll) {/* CODE */ }
+```
+
 #### Example 5
 
 Consider the two ways of creating a generic method which converts an array to a list:
