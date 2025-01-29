@@ -324,6 +324,8 @@ public static <T extends Comparable<? super T>>T max(Collection<T> c) {/* CODE *
     When you PUT values in to a structure, use the `super` wildcard.
     When you do both, do not use a wildcard.
 
+### Multiple Bounds for Generic Parameters
+
 #### Example 5
 
 Consider the two ways of creating a generic method which converts an array to a list:
