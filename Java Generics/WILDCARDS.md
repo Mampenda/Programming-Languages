@@ -219,8 +219,8 @@ graph BT;
 1. `C<..., S, ...>` is a subtype of `C<..., ?, ...>`
 2. `C<..., S, ...>` is a subtype of `C<..., ? extends T, ...>` if `S` is a subtype of `T`.
 3. `C<..., S, ...>` is a subtype of `C<..., ? super T, ...>` if `S` is a supertype of `T`.
-4. `C<..., ? extends S, ...>` is a subtype of `C<..., ?, ...>` if `S` is a subtype of `T`.
-5. `C<..., ? extends S, ...>` is a subtype of `C<..., ? super T, ...>` if `S` is a supertype of `T` (i.e. if `T` is a subtype of `S`).
+4. `C<..., ? extends S, ...>` is a subtype of `C<..., ? extends T, ...>` if `S` is a subtype of `T`.
+5. `C<..., ? super S, ...>` is a subtype of `C<..., ? super T, ...>` if `S` is a supertype of `T` (i.e. if `T` is a subtype of `S`).
 
 **Solutions**:
 `C<Animal>` is a subtype of `C<?>`.
