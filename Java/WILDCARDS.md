@@ -160,7 +160,7 @@ class Lists {
 }
 List<?> list = Lists.<?>factory();              // ❌ Error
 List<?> list = Lists.<Object>factory();         // ✅ OK: Explicit type arg (Object)
-List<List<?>> lists = Lists.<List<?>>factory(); // ✅ OK (nested wildcard)
+List<List<?>> lists = Lists.<List<?>>factory(); // ✅ OK: (nested wildcard)
 ```
 
 ### **Key Takeaways**
@@ -228,6 +228,38 @@ graph BT;
 `C<Animal>` is a subtype of `C<? super Dog>`.
 `C<? extends Dog>` is a subtype of `C<? extends Animal>`.
 `C<? super Animal>` is a subtype of `C<? super Dog>`.
+
+```java
+import java.io.*;
+import java.util.*;
+
+// Superclass
+class Animal { // CODE HERE }
+
+// Subclass extends superclass
+class Dog extends Animal {/* CODE */}
+
+// Main class
+public class Main {
+  public static void main(String[] args) {
+
+    // ✅ OK: Dog[] is subtype of Animal[]
+    Animal[] animalsArray = new Dog[5];
+
+    // ❌ Error: List<Dog> is NOT subtype of List<Animal>
+    ArrayList<Dog> is not a subtype of List<Animal>
+    List<Animal> animalsList1 = new ArrayList<Dog>();
+
+    // ✅ OK: List<Dog> is subtype of List<? extends Animal>
+    List<? extends Animal> animalsList2 = new ArrayList<Dog>();
+    List<Animal> animalsList1 = new ArrayList<Dog>();
+
+    // print OK after compiling without error
+    System.out.println("OK!");
+
+  }
+}
+```
 
 ```java
 // Using wildcards vs. not using wildcards
@@ -306,7 +338,7 @@ public interface Observable<S extends Observable<S, O, A>,
                             A> {/* CODE */}
 ```
 
-### Bounds for Type Variables (continuing)
+### Bounds for Type Variables
 
 In order to maximize reuse of methods, signatures should be as general as
 possible, so if you can replace a type parameter by a wildcard, then do so.
@@ -327,8 +359,14 @@ public static <T extends Comparable<? super T>>T max(Collection<T> c) {/* CODE *
 ### Multiple Bounds for Generic Parameters
 
 ```java
-// A type variable can extend multiple interfaces, but only one class
-// Becasue Java doesn't support multiple inheritance for classes
+// Some classes the Java standard library use multiple bounds
+public static <T extends Object & Comparable<? super T>> T max
+(Collection<? extends T> coll) {/* CODE */ }
+```
+
+A type variable can extend multiple interfaces, but only one class becasue Java doesn't support multiple inheritance for classes "extends" behaves like "extends" for the first bound, but like "implemets" for the rest
+
+```java
 public static <S extends Readable & Closeable, T extends Appendable & Closeable>
 void copy(S source, T target, int size) {/* CODE */}
 
@@ -336,79 +374,62 @@ void copy(S source, T target, int size) {/* CODE */}
 class SortedList<T extends Comparable<T> & Serializable> { ... }
 ```
 
+The Idea is similar to multiple class constraints in Haskell. This code takes a value `x` and a list `xs`, and returns a list of strings where the elements are less than `x`.
+
 ```haskell
-{-
-The Idea is similar to multiple class constraints in Haskell.
-This code takes a value x and a list xs, and returns a list of strings where the elements are less than x.
--}
 f :: (Show a, Ord a) => a -> [a] -> [String]
 f x xs = map show (filter (<x) xs)
 {-
-f 5 [3, 7, 2, 9, 1]
+Input: f 5 [3, 7, 2, 9, 1]
 Output: ["3", "2", "1"]
 -}
 ```
 
-### Multiple Bounds (continuing)
+## Parameterized Classes
+
+Here are two examples of code that returns an element of a pair.
 
 ```java
-// Some classes the Java standard library use multiple bounds
-public static <T extends Object & Comparable<? super T>> T max
-(Collection<? extends T> coll) {/* CODE */ }
-```
+// Java
+public class Pair<T, U> {
+  private T a;
+  private U b;
 
-#### Example 5
-
-Consider the two ways of creating a generic method which converts an array to a list:
-
-```java
-// This requires the caller to explicitly pass an array
-public static <T> List<T> toList(T[] array) {
-	List<T> list = new ArrayList<T>();
-	for (T element : array){
-		list.add(element);
-	}
-	return list;
-}
-```
-
-#### Example
-
-```java
-import java.io.*;
-import java.util.*;
-
-// Superclass
-class Animal { // CODE HERE }
-
-// Subclass extends superclass
-class Dog extends Animal { // CODE HERE }
-
-// Main class
-public class Main {
-  public static void main(String[] args) {
-
-    // OK during compile becasue an Dog[] is subtype of Animal[]
-    Animal[] animalsArray = new Dog[5];
-
-    // List<Animal> wontn't compile becasue
-    // ArrayList<Dog> is not a subtype of List<Animal>
-    List<Animal> animalsList1 = new ArrayList<Dog>();
-
-    // Wildcard extends Aminal will compile
-    List<? extends Animal> animalsList2 = new ArrayList<Dog>();
-
-    // print OK after compiling without error
-    System.out.println("OK!");
-
+  public Pair(T t, U u) {
+    this.a = t;
+    this.b = u;
   }
+
+  public T getFirst() { return this.a; }
+  public U getSecond() { return this.b; }
 }
+
+Pair<String, Integer> p = new Pair<String, Integer>(”hi”, 1);
 ```
 
-#### Example 2
+Type parameters `T` and `U` are declared at the beginning, not in the constructor. However, actual type arguments are passed in the constructor.
 
-#### Example 3
+We can "forget" to write type arguments when invoking the constructor becasue `Pair` is treated as a _raw type_.
 
-#### Example 4
+```haskell
+{- Haskell -}
+data Pair t u = Pair t u
 
-#### Example 5
+getFirst :: Pair t u -> t {- Constructor -}
+getFirst (Pair x y) = x
+
+getSecond :: Pair t u -> u {- Constructor -}
+getSecond (Pair x y) = y
+```
+
+Static members of a class cannot refer to type parameters becasue static members belong to the class itself, not to an instance of the class.
+
+However, type parameters (`T`) are tied to specific instances of a generic class, i.e. a static field or method cannot rely on a type parameter since it does not belong to any specific instance.
+
+```java
+<T extends Object & Comparable<? super T>>
+```
+
+When writing `T extends Object`, we explicitly state that every `T` must at least be an `Object`, ensuring a well-defined type for `T`.
+
+Similarly, static members need a known type at compile-time, and type parameters are unknown at that level.
