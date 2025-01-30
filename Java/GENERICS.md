@@ -76,7 +76,7 @@ public class GenericsExample {
         words.add("Hello");
         words.add("World");
 
-        String str = words.get(0);  // ✅ No explicit casting needed
+        String str = words.get(0);  // ✅OK: No explicit casting needed
         System.out.println(str);
     }
 }
@@ -181,8 +181,8 @@ interface Collection<E> {
     boolean add(E element);
 }
 List<Number> numbers = new ArrayList<>();
-numbers.add(2);    // OK: Integer is a subtype of Number
-numbers.add(3.14); // OK: Double is a subtype of Number
+numbers.add(2);    // ✅OK: Integer is a subtype of Number
+numbers.add(3.14); // ✅OK: Double is a subtype of Number
 ```
 
 #### Generics Complications
