@@ -129,3 +129,61 @@ graph BT;
 ```
 
 # Variance with Generics
+
+## Subtype Relationships
+
+**Example:** A function expecting input of type `Any`:
+
+```kotlin
+fun f(a: Any) {
+    println(a.toString())
+}
+```
+
+We can pass a `String` because `String` is a subtype of `Any`.
+
+**Example:** A function expecting input of type `List<Any>`:
+
+```kotlin
+fun printContents(list: List<Any>) {
+    println(list.joinToString())
+}
+printContents(listOf("abc", "xyz")) // ✅ OK
+```
+
+## Covariance in Kotlin
+
+`List<T>` is _covariant_ → If `A` is a subtype of `B`, then `List<A>` is a subtype of `List<B>`.
+
+```kotlin
+val strings: List<String> = listOf("abc", "xyz")
+val anyList: List<Any> = strings // ✅ OK
+```
+
+This works because immutable lists only allow reading, not modification.
+
+### Why Mutability Breaks This
+
+`MutableList<T>` is not covariant
+
+```kotlin
+fun addAnswer(list: MutableList<Any>) {
+    list.add(42) // ❌ Error: Potential type issue
+}
+
+val strings = mutableListOf("abc", "xyz")
+addAnswer(strings) // ❌ Error: Compile-time error
+```
+
+Allowing `MutableList<String>` as `MutableList<Any>` would break type safety.
+
+#### Key Takeaways
+
+1. `List<T>` (immutable) is covariant (`List<String>` → `List<Any>` is valid).
+2. `MutableList<T>` is _invariant_ (`MutableList<String>` ⊄ `MutableList<Any>` and vice versa).
+
+### Variance depends on how a type is used:
+
+**Covariant (out): Safe if only read operations are allowed (List<T>).**
+**Contravariant (in): Safe if only write operations are allowed.**
+**Invariant: When both read/write are used (MutableList<T>).**
