@@ -52,11 +52,11 @@ interface VendingMachine {
     fun purchase(money: Coin): Snack
 }
 
-class SimpleVendingMachine1 : VendingMachine {
+class SimpleVendingMachine : VendingMachine {
     override fun purchase(money: Coin): CandyBar = Snack.random()
 }
 
-class SimpleVendingMachine2 : VendingMachine {
+class SimpleVendingMachine : VendingMachine {
     override fun purchase(money: Coin): CandyBar = CandyBar()
 }
 ```
@@ -83,6 +83,18 @@ graph BT;
 
 ## Contra-variance (Parameter Type)
 
+Now consider these hierarchy:
+
+```mermaid
+graph BT;
+    Dime -->|subtype of| Coin
+    Quarter -->|subtype of| Coin
+    OneDollar -->|subtype of| Bill
+    TwoDollar -->|subtype of| Bill
+    Coin -->|subtype of| Money
+    Bill -->|subtype of| Money
+```
+
 A subtype can accept a **more general** type as parameter.
 
 ```kotlin
@@ -90,21 +102,24 @@ interface VendingMachine {
     fun purchase(money: Coin): Snack
 }
 
+// ❌ Error: Quarter is more specific than Coin
 class SimpleVendingMachine : VendingMachine {
-    override fun purchase(money: Money): Snack = Snack.random() // Should it not be CandyBar() here to make it more specific??
+    override fun purchase(money: Quarter): Snack = CandyBar()
+}
+
+// ✅ OK: Money is more general than Coin
+class SimpleVendingMachine : VendingMachine {
+    override fun purchase(money: Money): Snack = CandyBar()
 }
 ```
 
-```mermaid
-graph BT;
-    Dime -->|subtype of| Coin
-    Quarter -->|subtype of| Coin
-```
+`SimpleVendingMachine` is more specific and now accepts all `Money`, not just `Coin`, and returns a `CandyBar`, not just a `Snack`.
 
-`SimpleVendingMachine` is more specific, but now accepts all `Money`, not just `Coin`.
-Since one becomes _more specific_, while the other _more general_, this is **contravariance**.
+Since the return type becomes _more specific_, while the container type _more general_, this is **contravariance**.
 
-### Function Type Properties
+###
+
+#### Function Type Properties
 
 **Kotlin does not allow contravariance directly** because overriding methods must have identical signatures, so the solution is to use function type properties:
 
@@ -116,17 +131,6 @@ interface VendingMachine {
 class SimpleVendingMachine : VendingMachine {
     override val purchase: (Money) -> Snack = { Snack.random() }
 }
-```
-
-```mermaid
-graph BT;
-    Dime -->|subtype of| Coin
-    Quarter -->|subtype of| Coin
-    OneDollar -->|subtype of| Bill
-    TwoDollar -->|subtype of| Bill
-    Coin -->|subtype of| Money
-    Bill -->|subtype of| Money
-
 ```
 
 # Variance with Generics
