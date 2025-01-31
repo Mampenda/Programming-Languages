@@ -91,7 +91,7 @@ interface VendingMachine {
 }
 
 class SimpleVendingMachine : VendingMachine {
-    override fun purchase(money: Money): Snack = Snack.random()
+    override fun purchase(money: Money): Snack = Snack.random() // Should it not be CandyBar() here to make it more specific??
 }
 ```
 
