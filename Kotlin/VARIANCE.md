@@ -35,7 +35,7 @@ fun printContents(list: List<Any>) {
 printContents(listOf("abc", "xyz")) // Will this work?
 ```
 
-## Co-variance (Return Type)
+## Covariance (Return Type)
 
 Assume now we have this hierarchy for snacks:
 
@@ -69,7 +69,7 @@ Since both become _more specific_, this is **covariance**.
 
 ---
 
-## Contra-variance (Parameter Type)
+## Contravariance (Parameter Type)
 
 Now consider these hierarchy:
 
