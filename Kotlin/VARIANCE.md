@@ -52,7 +52,11 @@ interface VendingMachine {
     fun purchase(money: Coin): Snack
 }
 
-class SimpleVendingMachine : VendingMachine {
+class SimpleVendingMachine1 : VendingMachine {
+    override fun purchase(money: Coin): CandyBar = Snack.random()
+}
+
+class SimpleVendingMachine2 : VendingMachine {
     override fun purchase(money: Coin): CandyBar = CandyBar()
 }
 ```
