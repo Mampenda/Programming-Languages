@@ -64,6 +64,7 @@ class SimpleVendingMachine2 : VendingMachine {
 A subtype can return a **more specific** type than the parent.
 
 `SimpleVendingMachine` is a subtype of `VendingMachine` (container type), and `CandyBar` is a subtype of `Snack`(return type).
+
 Since both become _more specific_, this is **covariance**.
 
 ---
@@ -94,15 +95,11 @@ class SimpleVendingMachine : VendingMachine {
 }
 ```
 
----
-
 ```mermaid
 graph BT;
     Dime -->|subtype of| Coin
     Quarter -->|subtype of| Coin
 ```
-
----
 
 `SimpleVendingMachine` is more specific, but now accepts all `Money`, not just `Coin`.
 Since one becomes _more specific_, while the other _more general_, this is **contravariance**.
