@@ -221,7 +221,7 @@ val strings: MutableList<String> = mutableListOf("a", "b")
 val anys: MutableList<Any> = strings
 ```
 
-## Covarianve in Kotlin
+## Covarianve in Kotlin (continuing)
 
 Covariance allows **subtype relationships to be perserved** in generics:
 
@@ -291,3 +291,69 @@ Since `Herd<out T>` ensures that it only provides elements, it is safe to use `H
 - **Covariance (`out`) preserves subtype relationships**: `Herd<Cat>` can be used where `Herd<Animal>` is expected.
 - **`out` means "only produce, never consume"**: Methods can return `T`, but not accept it as an argument.
 - **Type safety is enforced**: Kotlin prevents unsafe modifications while allowing flexibility in usage.
+
+## Covariance in Kotlin: In-/Out-positions
+
+```kotlin
+interface Transformer<T> {
+    fun transform(t:T) : T
+}
+```
+
+**Parameter `T` is in-position** → Consumed as input.
+**Return type `T` is out-position** → Produced as output.
+**Only out-positions ensure type safety**, so out is used for covariance.
+
+Consider the `List<out T>` interface, which represents immutable lists:
+
+```kotlin
+interface List<out T> : Collection<T> {
+    operator fun get(index: Int): T //Int in, T out
+    fun subList(fromIndex: Int, toIndex: Int): List<T>// Int in (twice), List<T> out
+}
+```
+
+The `out T` ensures `T` is only used in out-positions, making `List` **covariant in `T`**.
+
+### Revisiting `MutableList<T>`
+
+```kotlin
+// MutableList can't be declared covariant because of in-positions
+interface MutableList<T> : List<T>, MutableCollection<T> {
+    override fun add(element: T): Boolean  // ❌ Error: Consuming T (in)
+}
+```
+
+## Variance in Constructors
+
+```kotlin
+class Herd<out T: Animal>(vararg animals: T) {/* CODE */}
+```
+
+Constructor parameters are neither in- nor out-positions because constructors are invoked involuntarily when instances are created.
+
+- **`val` (immutable) parameters:** Treated as out-positions, so covariance is maintained.
+- **`var` (mutable) parameters:** Act as both in- and out-positions, which violates covariance.
+
+### Covarianve vs. Visibility Modifiers
+
+#### Rules
+
+- The in/out-position rules apply only to **public**, **protected**, or **internal** methods (i.e., methods visible from outside).
+- **Private method parameters are neither in- nor out-positions.**
+
+```kotlin
+// leadAnimal is a private parameter, and thus is in a neutral position
+class Herd<out T: Animal>(private var leadAnimal: T, vararg animals: T) { /* CODE */}
+```
+
+```
+// Combinations of in-/out-positions and what they entail:
+in + … + in          = in
+out + … + out        = out
+in + out + …         = both
+something + both     = both
+something + neutral  = something
+```
+
+## Contravariance
