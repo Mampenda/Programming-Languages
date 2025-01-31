@@ -63,7 +63,7 @@ class SimpleVendingMachine2 : VendingMachine {
 
 A subtype can return a **more specific** type than the parent.
 
-`SimpleVendingMachine` is a subtype of `VendingMachine` (container tpye), and `CandyBar` is a subtype of `Snack`(return type)
+`SimpleVendingMachine` is a subtype of `VendingMachine` (container type), and `CandyBar` is a subtype of `Snack`(return type)
 Since both become _more specific_, this is **covariance**.
 
 ---
