@@ -69,7 +69,9 @@ Since both become _more specific_, this is **covariance**.
 
 ---
 
-Now, cosider this hierarchy for the contents in the vending machine, and the form of payment it is able to recieve:
+## Contra-variance (Parameter Type)
+
+Now consider these hierarchy:
 
 ```mermaid
 graph BT;
@@ -81,9 +83,7 @@ graph BT;
     Toy -->|subtype of| Product
 ```
 
-## Contra-variance (Parameter Type)
-
-Now consider these hierarchy:
+---
 
 ```mermaid
 graph BT;
