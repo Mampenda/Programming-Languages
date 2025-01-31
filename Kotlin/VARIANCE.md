@@ -170,18 +170,25 @@ This works because immutable lists only allow reading, not modification.
 
 ### Why Mutability Breaks This
 
-`MutableList<T>` is not covariant
+`MutableList<T>` is NOT covariant.
 
 ```kotlin
+ // ❌ Error: We dont know what type the other elements have
 fun addAnswer(list: MutableList<Any>) {
-    list.add(42) // ❌ Error: Potential type issue
+    list.add(42)
 }
 
+// ❌ Error: Compile-time error on addAnswer(strings)
 val strings = mutableListOf("abc", "xyz")
-addAnswer(strings) // ❌ Error: Compile-time error
+addAnswer(strings)
 ```
 
-Allowing `MutableList<String>` as `MutableList<Any>` would break type safety.
+Allowing `MutableList<String>` as `MutableList<Any>` would break type safety because
+
+`MutableList<T>` is _NOT_ subtype of `MutableList<Any>` and
+`MutableList<Any>` is _NOT_ subtype of `MutableList<T>`.
+
+In other words, they're **invariant**.
 
 #### Key Takeaways
 
@@ -193,3 +200,5 @@ Allowing `MutableList<String>` as `MutableList<Any>` would break type safety.
 **Covariant (out): Safe if only read operations are allowed (List<T>).**
 **Contravariant (in): Safe if only write operations are allowed.**
 **Invariant: When both read/write are used (MutableList<T>).**
+
+# Invariance
