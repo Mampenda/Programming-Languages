@@ -107,7 +107,7 @@ class SimpleVendingMachine : VendingMachine {
     override fun purchase(money: Quarter): Snack = CandyBar()
 }
 
-// ✅ OK: Money is more general than Coin
+// ⚠️ Technically OK: Money is more general, but returning CandyBar() is not allowed
 class SimpleVendingMachine : VendingMachine {
     override fun purchase(money: Money): Snack = CandyBar()
 }
@@ -128,6 +128,7 @@ interface VendingMachine {
     val purchase: (Coin) -> Snack
 }
 
+// ✅ OK: Money is more general, and Snack.random() is more specific
 class SimpleVendingMachine : VendingMachine {
     override val purchase: (Money) -> Snack = { Snack.random() }
 }
