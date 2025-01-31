@@ -201,4 +201,93 @@ In other words, they're **invariant**.
 **Contravariant (in): Safe if only write operations are allowed.**
 **Invariant: When both read/write are used (MutableList<T>).**
 
-# Invariance
+## Invariance in Kotlin
+
+In Java, all classes are _invariant_, but that's not the case in Kotlin.
+
+**A more general fromulation of invariance:**
+A generic type `C<T>` is **invariant** if:
+
+- `C<A>`is **not** a subtype of `C<B>` (`C<A>` ⊄ `C<B>`)
+- `C<B>`is **not** a subtype of `C<A>` (`C<B>` ⊄ `C<A>`)
+
+This means **no subtype relationship exists** between `C<A>` and `C<B>`, even if `A` is a subtype og `B`.
+
+Like we saw in the example above:
+
+```kotlin
+val strings: MutableList<String> = mutableListOf("a", "b")
+// ❌ Error: MutableList<T> is invariant
+val anys: MutableList<Any> = strings
+```
+
+## Covarianve in Kotlin
+
+Covariance allows **subtype relationships to be perserved** in generics:
+
+If `A` is a subtype of `B`, then `Producer<A>` is a subtype of `Producer<B>`, and `Producer` is declared with `out T` (only produced, never consumed), then `Producer` is **covariant in T**
+
+```kotlin
+interface Producer<out T> {
+    fun produce(): T
+}
+```
+
+Declaring `out T` ensures that `T` can only be returned (produced) from functions but not accepted (consumed) as parameters. This prevents type-safety issues by restricting modifications to the generic type.
+
+Immutable collections like `List<T>` are covariant because they only return elements, ensuring type safety:
+
+```kotlin
+interface List<out T> {
+    operator fun get(index: Int): T
+}
+```
+
+**Example**
+Covariance allows subtype relationships to be preserved in generics. If `Cat` is a subtype of `Animal`, we would expect `Herd<Cat>` to be a subtype of `Herd<Animal>`. However, by default, it is not.
+
+```kotlin
+class Herd<T : Animal> {
+    val size: Int get() = ...
+    operator fun get(i: Int): T { /*CODE*/ }
+}
+
+fun feedAll(animals: Herd<Animal>) {
+    for (i in 0 until animals.size) {
+        animals[i].feed()
+    }
+}
+
+class Cat : Animal() {
+    fun cleanLitter() { /*CODE*/ }
+}
+
+fun takeCareOfCats(cats: Herd<Cat>) {
+    for (i in 0 until cats.size) {
+        cats[i].cleanLitter()
+    }
+    // feedAll() expects Herd<Animal>, but Herd<Cat> is not a subtype of Herd<Animal>
+    feedAll(cats) // ❌ Compile error
+}
+
+class Herd<out T : Animal> {
+    fun addAnimal(animal: T) { /*CODE*/ } // ❌ Error: Consuming T (in)
+}
+```
+
+**Solution: Declare Covariance with `out`**
+
+```kotlin
+class Herd<out T : Animal> {
+    val size: Int get() =  // CODE
+    operator fun get(i: Int): T { /*CODE*/ } // ✅OK: Only producing (out)
+}
+```
+
+Since `Herd<out T>` ensures that it only provides elements, it is safe to use `Herd<Cat>` where `Herd<Animal>` is expected.
+
+### Summary
+
+- **Covariance (`out`) preserves subtype relationships**: `Herd<Cat>` can be used where `Herd<Animal>` is expected.
+- **`out` means "only produce, never consume"**: Methods can return `T`, but not accept it as an argument.
+- **Type safety is enforced**: Kotlin prevents unsafe modifications while allowing flexibility in usage.
