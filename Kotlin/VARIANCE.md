@@ -52,10 +52,12 @@ interface VendingMachine {
     fun purchase(money: Coin): Snack
 }
 
+// More specific return type
 class SimpleVendingMachine : VendingMachine {
     override fun purchase(money: Coin): CandyBar = Snack.random()
 }
 
+// Can we pass CandyBar() whenever we pass a Snack?
 class SimpleVendingMachine : VendingMachine {
     override fun purchase(money: Coin): CandyBar = CandyBar()
 }
@@ -357,3 +359,5 @@ something + neutral  = something
 ```
 
 ## Contravariance
+
+Slides: variance in Kotlin vs. Java
