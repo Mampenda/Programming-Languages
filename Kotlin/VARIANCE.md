@@ -339,7 +339,7 @@ Constructor parameters are neither in- nor out-positions because constructors ar
 - **`val` (immutable) parameters:** Treated as out-positions, so covariance is maintained.
 - **`var` (mutable) parameters:** Act as both in- and out-positions, which violates covariance.
 
-### Covarianve vs. Visibility Modifiers
+### Covariance vs. Visibility Modifiers
 
 #### Rules
 
@@ -362,4 +362,46 @@ something + neutral  = something
 
 ## Contravariance
 
-Slides: variance in Kotlin vs. Java
+Contravariance is the opposite of covariance - it **reverses the subtyping direction:**
+
+If `A` is a subtype of `B`, then `Consumer<B>` is a subtype of `Consumer<A>`.
+
+**Example**:
+`Consumer<Animal>` is a subtype of `Consumer<Cat>`, because a consumer of `Animals` can also handle `Cats`.
+
+```kotlin
+// Contravariance (T is only in in-position, e.g. contravariance is ensured)
+interface Comparator<in T> { // Declaring T in in position
+    fun compare(e1: T, e2: T): Int
+}
+
+val anyComparator: Comparator<Any> = { /* CODE */ }
+val strings: List<String> = { /* CODE */ }
+
+// ✅OK: Comparator<Any> is a subtype of Comparator<String>
+strings.sortedWith(anyComparator)
+```
+
+**Contravariance allows passing more general comparators, ensuring flexibility.**
+
+```mermaid
+graph BT;
+    Cat[Cat]
+    Animal[Animal]
+    ProducerAnimal[Producer&lt;Animal&gt; ]
+    ProducerCat[Producer&lt;Cat&gt; ]
+    ConsumerAnimal[Consumer&lt;Animal&gt; ]
+    ConsumerCat[Consumer&lt;Cat&gt; ]
+
+    Cat --> Animal
+    ProducerCat -->|covariant| ProducerAnimal
+    ConsumerAnimal -->|contravariant| ConsumerCat
+```
+
+| Covariance                                           | Contravariance                                                                                               | Invariance                                                                                                                                  |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Producer<**out** T>`                                | `Consumer<**in** T>`                                                                                         | `InvariantClass<T>`                                                                                                                         |
+| The direction of the subtyping relation is perserved | The direction of the subtyping relation is changed                                                           | No subtyping relation                                                                                                                       |
+| `Producer<Cat>` is a subtype of `Producer<Animal>`   | `Consumer<Animal>` is a subtype of `Consumer<Cat>` <=> `Consumer<Cat>` is a supertype of `Consumer<Animal>`. | `InvariantClass<Animal>` is **NOT** subtype of `InvariantClass<Cat>` & `InvariantClass<Cat>` is **NOT** subtype of `InvariantClass<Animal>` |
+| `T`only in **out-positions**                         | `T` only in **in-positions**                                                                                 | `T` in **any position**                                                                                                                     |
+| Example: `List<**out** T>`                           | Example: `Comparator<**in** T>`                                                                              | Example: `MutableList<T>`                                                                                                                   |
