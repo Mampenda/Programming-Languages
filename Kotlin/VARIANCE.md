@@ -249,12 +249,12 @@ interface List<out T> {
 Covariance allows subtype relationships to be preserved in generics. If `Cat` is a subtype of `Animal`, we would expect `Herd<Cat>` to be a subtype of `Herd<Animal>`. However, by default, it is not.
 
 ```kotlin
-class Herd<T : Animal> {
+class Herd<T: Animal> {
     val size: Int get() = ...
     operator fun get(i: Int): T { /*CODE*/ }
 }
 
-fun feedAll(animals : Herd<Animal>) {
+fun feedAll(animals: Herd<Animal>) {
     for (i in 0 until animals.size) {
         animals[i].feed()
     }
@@ -264,7 +264,7 @@ class Cat : Animal() {
     fun cleanLitter() { /*CODE*/ }
 }
 
-fun takeCareOfCats(cats : Herd<Cat>) {
+fun takeCareOfCats(cats: Herd<Cat>) {
     for (i in 0 until cats.size) {
         cats[i].cleanLitter()
     }
@@ -298,13 +298,15 @@ Since `Herd<out T>` ensures that it only "produces" elements, it is safe to use 
 
 ```kotlin
 interface Transformer<T> {
-    fun transform(t:T) : T
+    fun transform(t: T) : T
 }
 ```
 
-**Parameter `T` is in-position** → Consumed as input.
-**Return type `T` is out-position** → Produced as output.
-**Only out-positions ensure type safety**, so out is used for covariance.
+- **Parameter `T` is in-position** → Consumed as input.
+
+- **Return type `T` is out-position** → Produced as output.
+
+- **Only out-positions ensure type safety**, so out is used for covariance.
 
 Consider the `List<out T>` interface, which represents immutable lists:
 
