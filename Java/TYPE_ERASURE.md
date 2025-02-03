@@ -27,7 +27,3 @@ class B extends A {
 - `instanceOf` does not work on generics (e.g., `x.instanceOf(T)` is invalid).
 - Overloaded methods may conflict dure to erasure.
 - Generic exceptions are forbidden (`SomeException<T>` cannot extend `Throwable`).
-
-# Reification
-
-slides: reification in Java
