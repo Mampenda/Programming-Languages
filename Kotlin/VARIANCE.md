@@ -73,7 +73,7 @@ Since both become _more specific_, this is **covariance**.
 
 ## Contravariance (Parameter Type)
 
-Now consider these hierarchy:
+Now consider these hierarchies:
 
 ```mermaid
 graph BT;
@@ -219,15 +219,14 @@ Like we saw in the example above:
 
 ```kotlin
 val strings: MutableList<String> = mutableListOf("a", "b")
-// ❌ Error: MutableList<T> is invariant
-val anys: MutableList<Any> = strings
+val anys: MutableList<Any> = strings // ❌ Error: MutableList<T> is invariant
 ```
 
 ## Covarianve in Kotlin (continuing)
 
 Covariance allows **subtype relationships to be perserved** in generics:
 
-If `A` is a subtype of `B`, then `Producer<A>` is a subtype of `Producer<B>`, and `Producer` is declared with `out T` (only produced, never consumed), then `Producer` is **covariant in T**
+If `A` is a subtype of `B`, `Producer<A>` is a subtype of `Producer<B>`, `Producer` is declared with `out T` (only produced, never consumed), then `Producer` is **covariant in T**
 
 ```kotlin
 interface Producer<out T> {
@@ -237,7 +236,7 @@ interface Producer<out T> {
 
 Declaring `out T` ensures that `T` can only be returned (produced) from functions but not accepted (consumed) as parameters. This prevents type-safety issues by restricting modifications to the generic type.
 
-Immutable collections like `List<T>` are covariant because they only return elements, ensuring type safety:
+Immutable collections like `List<T>` are covariant because they only return elements (`out`), ensuring type safety:
 
 ```kotlin
 interface List<out T> {
@@ -246,6 +245,7 @@ interface List<out T> {
 ```
 
 **Example**
+
 Covariance allows subtype relationships to be preserved in generics. If `Cat` is a subtype of `Animal`, we would expect `Herd<Cat>` to be a subtype of `Herd<Animal>`. However, by default, it is not.
 
 ```kotlin
@@ -254,7 +254,7 @@ class Herd<T : Animal> {
     operator fun get(i: Int): T { /*CODE*/ }
 }
 
-fun feedAll(animals: Herd<Animal>) {
+fun feedAll(animals : Herd<Animal>) {
     for (i in 0 until animals.size) {
         animals[i].feed()
     }
@@ -264,7 +264,7 @@ class Cat : Animal() {
     fun cleanLitter() { /*CODE*/ }
 }
 
-fun takeCareOfCats(cats: Herd<Cat>) {
+fun takeCareOfCats(cats : Herd<Cat>) {
     for (i in 0 until cats.size) {
         cats[i].cleanLitter()
     }
@@ -286,7 +286,7 @@ class Herd<out T : Animal> {
 }
 ```
 
-Since `Herd<out T>` ensures that it only provides elements, it is safe to use `Herd<Cat>` where `Herd<Animal>` is expected.
+Since `Herd<out T>` ensures that it only "produces" elements, it is safe to use `Herd<Cat>` where `Herd<Animal>` is expected.
 
 ### Summary
 
