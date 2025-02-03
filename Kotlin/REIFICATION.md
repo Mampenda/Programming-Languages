@@ -19,7 +19,7 @@ println(items.filterIsInstance<String>())  // ✅ OK: Output = [one, three]
 ## Type Projections
 
 **Star Projections**(`List<*>`):
-A type of unknown type parameter. Equivalent to Java's `List<?>`. It allows access to elements but restricts modifications.
+A type of unknown type parameter. Equivalent to Java's `List<?>`. It allows access to elements but restricts modifications. It allows safe reading but not modification.
 
 - **Kotlin**: Safe element retrieval (`list.first()`), but no safe element modification or adding.
 - **Java**: Similar restrictions apply.
@@ -40,8 +40,9 @@ Represents a contravariant type, where `T` can only be passed as arguments, not 
 
 **Star-Projections** (`VendingMachine<*>`):
 
-Treats the type argument as unknown. Behaves similarly to `out` with a broader scope.
+Treats the type argument as unknown. Behaves similarly to `out` with a broader scope. Equivalent to `VendingMachine<out Product>`.
 
 - Use when the type argument is irrelevant.
+- It replaces `in`-position types with `Nothing` and `out`-position types with the upper bound of `T`.
 
 Kotlin's projection system allows flexibility in handling variance, letting you control the behavior of types in generics based on whether they are inputs or outputs.
