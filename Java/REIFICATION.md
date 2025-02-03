@@ -38,9 +38,10 @@ T[] arr = (T[]) java.lang.reflect.Array.newInstance(T.class, size); // ✅ OK: U
 ```
 
 **Key Takeaways:**
-✔ Instance tests (`instanceOf`) must use reifiable types
-✔ Casts should be to reifiable types
-✔ Generic exceptions (`Throwable<T>`) are forbidden
-✔ Varargs (`T... args`) should be reifiable
+
+- Instance tests (`instanceOf`) must use reifiable types
+- Casts should be to reifiable types
+- Generic exceptions (`Throwable<T>`) are forbidden
+- Varargs (`T... args`) should be reifiable
 
 This ensures type safety and avoids runtime errors caused by type erasure.
