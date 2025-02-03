@@ -400,8 +400,83 @@ graph BT;
 
 | Covariance                                           | Contravariance                                                                                               | Invariance                                                                                                                                  |
 | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Producer<**out** T>`                                | `Consumer<**in** T>`                                                                                         | `InvariantClass<T>`                                                                                                                         |
+| `Producer<out T>`                                    | `Consumer<in T>`                                                                                             | `InvariantClass<T>`                                                                                                                         |
 | The direction of the subtyping relation is perserved | The direction of the subtyping relation is changed                                                           | No subtyping relation                                                                                                                       |
 | `Producer<Cat>` is a subtype of `Producer<Animal>`   | `Consumer<Animal>` is a subtype of `Consumer<Cat>` <=> `Consumer<Cat>` is a supertype of `Consumer<Animal>`. | `InvariantClass<Animal>` is **NOT** subtype of `InvariantClass<Cat>` & `InvariantClass<Cat>` is **NOT** subtype of `InvariantClass<Animal>` |
 | `T`only in **out-positions**                         | `T` only in **in-positions**                                                                                 | `T` in **any position**                                                                                                                     |
-| Example: `List<**out** T>`                           | Example: `Comparator<**in** T>`                                                                              | Example: `MutableList<T>`                                                                                                                   |
+| Example: `List<out T>`                               | Example: `Comparator<in T>`                                                                                  | Example: `MutableList<T>`                                                                                                                   |
+
+### Mixing Variance
+
+Kotlin allows **mixed variance**, meaning a class or interface can be **covariant in some type parameters** and **contravariant in others**.
+
+```kotlin
+interface Function1<in P, out R> { // P (parameter) is in-position → Contravariant (in).
+    operator fun invoke(p: P): R   // R (return type) is out-position → Covariant (out).
+}
+
+// This works becasue Animal is a supertype of Cat (contravariance) and Int is a subtype of Number (covariance)
+fun enumerateCats(f: Function1<Cat, Number>) { /* CODE */}
+fun Animal.getIndex(): Int = … // Function1<Animal, Int>
+
+enumerateCats(Animal::getIndex) // ✅ OK!
+```
+
+```mermaid
+graph BT;
+    Cat[Cat]
+    Animal[Animal]
+    Function1Animal[Function1&lt;Animal, Int&gt; ]
+    Function1Cat[Function1&lt;Cat, Number&gt; ]
+    Number[Number]
+    Int[Int]
+
+    Cat -->|subtype of| Animal
+    Function1Animal -->|subtype of| Function1Cat
+    Int -->|subtype of| Number
+```
+
+### Variance in Java
+
+```Java
+// Example of Generic Pair Class
+class Pair<X, Y> { // X is in in-position (contravariant), Y is in out-position (covariant)
+    private X first;
+    private Y second;
+
+    Pair(X a, X b) { this.first = a; this.second = b; }
+
+    void setFirst(X a) { this.first = a; }
+    Y getSecond() { return this.second; }
+}
+
+// Java doesn't support declaration-site variance, so this model doesnt work
+// Java requires use-site (wildcards) to handle variance properly
+
+getAndSet(new Pair<A, C>(), new B()); // ✅ Safe
+getAndSet(new Pair<C, A>(), new B()); // ❌ Unsafe
+```
+
+### Declaration-Site vs. Use-Site Variance
+
+- **Kotlin**: Supports **declaration-site variance**, allowing variance to be specified when defining a class/interface (`out T`, `in T`).
+- **Java**: Lacks declaration-site variance; all generics are invariant by default.
+
+#### Use-Site Variance (Kotlin & Java)
+
+Variance can be specified when using a generic type.
+
+```kotlin
+// Copying Data Without Variance (Invalid in Kotlin)
+fun <T> copyData(src: MutableList<T>, dst: MutableList<T>) { /* CODE */ } // ❌ Error
+
+// Corrected with Use-Site Variance
+fun <T> copyData(src: MutableList<out T>, dst: MutableList<T>) { /* CODE */ } //✅ OK: Covariant
+fun <T> copyData(src: MutableList<T>, dst: MutableList<in T>) { /* CODE */ }  //✅ OK: Contravariant
+```
+
+| Desired use-site variance | Kotlin                                   | Java                                           |
+| ------------------------- | ---------------------------------------- | ---------------------------------------------- |
+| Covariance                | `<T> void f(x: C<out T>) { /* CODE */ }` | `<T> void f(x: C<? extends T>) { /* CODE */ }` |
+| Contravariance            | `<T> void f(x: C<in T>) { /* CODE */ }`  | `<T> void f(x: C<? super T>) { /* CODE */ }`   |
+| Invariance                | `<T> void f(x: C<T>) { /* CODE */ }`     | `<T> void f(x: C<T>) { /* CODE */ }`           |
