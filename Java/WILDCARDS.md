@@ -235,7 +235,7 @@ import java.io.*;
 import java.util.*;
 
 // Superclass
-class Animal { // CODE HERE }
+class Animal {/* CODE */}
 
 // Subclass extends superclass
 class Dog extends Animal {/* CODE */}
