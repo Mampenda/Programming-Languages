@@ -5,7 +5,7 @@ These generics functions will compute the minimum of two numbers.
 **C++**
 
 ```c++
-// Pass parameters as const T&: Avoids unnecessary copies for non-primitive types (e.g., std::string or custom objects).
+// Pass parameters as const T. Avoids unnecessary copies for non-primitive types (e.g., std::string or custom objects).
 template <typename T>
 T min(const T& a, const T& b) {
     return (a < b) ? a : b;

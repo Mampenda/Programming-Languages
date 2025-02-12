@@ -84,4 +84,12 @@ Logging BEFORE createUser method is executed.
 User John Doe has been created.
 ```
 
-**Explanation:** The example shows how logging is automatically added before calling `createUser()` without modifying `UserService`, which is the essence of AOP!
+**Explanation:**
+
+The example shows how logging is automatically added before calling `createUser()` without modifying `UserService`, which is the essence of AOP!
+
+In other words:
+
+- **Pointcut**: Intercepts all method calls in com.example package.
+- **Advice**: Logs method calls before execution.
+- **Weaving**: Spring AOP weaves the aspect at runtime.
