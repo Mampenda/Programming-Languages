@@ -318,18 +318,16 @@ public static <E> void print(List<E> a, E threshold) {/* CODE */}
 Bounds for type variables are indicated by keyword `extends`, while bounds for wildcards are indicated by both `extends` and `super`.
 
 ```java
-// Use extend to get values from collection
-// and super to put values into compareTo().
+// Use extend to get values from collection and super to put values into compareTo().
 public static <T extends Comparable<? super T>> T max(
   Collection<? extends T> collection) {/* CODE */}
 ```
 
 ### Recursive Bounds
 
-Consider the Subject-Observer Pattern
+Consider the Subject-Observer Pattern where type variables reference themselves in their bounds. This is an example of recusrive bounds and how they can be declared.
 
 ```java
-// Type variables reference themselves in their bounds
 public class Observable<S extends Observable<S, O, A>,
                         O extends Observer<S, O, A>,
                         A> {/* CODE */}
@@ -365,7 +363,7 @@ public static <T extends Object & Comparable<? super T>> T max
 (Collection<? extends T> coll) {/* CODE */ }
 ```
 
-A type variable can extend multiple interfaces, but only one class becasue Java doesn't support multiple inheritance for classes "extends" behaves like "extends" for the first bound, but like "implemets" for the rest
+A type variable can extend multiple interfaces, but only one class becasue Java doesn't support multiple inheritance for classes. `extends` behaves like `extends` for the first bound, but like `implemets` for the rest
 
 ```java
 public static <S extends Readable & Closeable, T extends Appendable & Closeable>
