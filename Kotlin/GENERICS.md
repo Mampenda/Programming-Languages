@@ -40,7 +40,7 @@ val <T> List<T>.penultimate: T // penultimate retrieves the second-to-last eleme
 println(listOf(1, 2, 3, 4).penultimate) //✅OK: Outputs 3
 ```
 
-#### Bounds for Type Variables
+### Bounds for Type Variables
 
 **Upper bounds**: `T: U` is equivalent to Java's `T extends U`.
 **No Lower bounds**: unlike, Java which supports them for wildcards.
@@ -70,7 +70,7 @@ ensureTrailingPeriod(s)
 println(s) // Output: "Hello world."
 ```
 
-#### Nullability & Type Arguments
+### Nullability & Type Arguments
 
 **In Kotlin:** `Any` is the root, as `Object` is in Java.
 
