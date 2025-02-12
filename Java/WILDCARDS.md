@@ -58,7 +58,7 @@ This approach enables flexible yet type-safe copying while maintaining compatibi
 
 ```java
 List<Object> objs = Arrays.<Object>asList(2, 3.14, "a");
-List<Integer> ints = Arrays.asList(5,6);
+List<Integer> ints = Arrays.asList(5, 6);
 Collections.copy(objs, ints); // No specification of type args
 ```
 
@@ -67,7 +67,7 @@ Type parameters can be omitted, and will still be inferred, so we could still ex
 ```java
 Collections.<Integer>copy(objs, ints); // Specifcation as Integer
 Collections.<Object>copy(objs, ints);  // Specification as Object
-Collections.<Number>copy(objs, ints);  // Specification as Numer
+Collections.<Number>copy(objs, ints);  // Specification as Number
 ```
 
 The third example is permitted because:
@@ -86,7 +86,7 @@ The third example is permitted because:
     When you PUT values in to a structure, use the `super` wildcard.
     When you do both, do not use a wildcard.
 
-The `copy( List<? super T> destination, List<? extends T> source)` method from example 2 gets values out of the source list, and puts them into the destination list.
+The `copy( List<? super T> destination, List<? extends T> source)` method from example 2 GETs values out of the source list, and PUTs them into the destination list.
 
 ###
 
@@ -125,7 +125,7 @@ Since the exact type of `<?>` is unknown, modifying the list inside this method 
 // To enable modifications, we use a generic parameter
 public static <T> void rev(List<T> list);
 
-// Wildcard capture allows us to delegate:
+// Wildcard capture allows us to delegate.
 // Here <T> captures <?>, enabling modifications.
 public static void reverse(List<?> list) { rev(list); }
 ```
@@ -145,9 +145,9 @@ List<List<?>> lists = new ArrayList<List<?>>(); // ✅ OK: Nested wildcard
 #### **2. Supertypes**
 
 ```java
-class MyList extends ArrayList<?> { }           // ❌ Error
-class MyList implements List<?> { }             // ❌ Error
-class NestedList extends ArrayList<List<?>> { } // ✅ OK: Nested wildcard
+class MyList extends ArrayList<?> {/* CODE */}           // ❌ Error
+class MyList implements List<?> {/* CODE */}             // ❌ Error
+class NestedList extends ArrayList<List<?>> {/* CODE */} // ✅ OK: Nested wildcard
 ```
 
 #### **3. Generic Method Call**
@@ -223,11 +223,12 @@ graph BT;
 5. `C<..., ? super S, ...>` is a subtype of `C<..., ? super T, ...>` if `S` is a supertype of `T` (i.e. if `T` is a subtype of `S`).
 
 **Solutions**:
-`C<Animal>` is a subtype of `C<?>`.
-`C<Animal>` is a subtype of `C<? extends Animal>`.
-`C<Animal>` is a subtype of `C<? super Dog>`.
-`C<? extends Dog>` is a subtype of `C<? extends Animal>`.
-`C<? super Animal>` is a subtype of `C<? super Dog>`.
+
+1. `C<Animal>` is a subtype of `C<?>`.
+2. `C<Animal>` is a subtype of `C<? extends Animal>`.
+3. `C<Animal>` is a subtype of `C<? super Dog>`.
+4. `C<? extends Dog>` is a subtype of `C<? extends Animal>`.
+5. `C<? super Animal>` is a subtype of `C<? super Dog>`.
 
 ```java
 import java.io.*;
