@@ -34,7 +34,7 @@ println(cities.filter { it !in capitals }) // `it` inferred as String
 Kotlin allows defining generic propertirs in extensions
 
 ```kotlin
-val <T> List<T>.penultimate: T
+val <T> List<T>.penultimate: T // penultimate retrieves the second-to-last element of a list
     get() = this[size - 2]
 
 println(listOf(1, 2, 3, 4).penultimate) //✅OK: Outputs 3
@@ -73,7 +73,9 @@ println(s) // Output: "Hello world."
 #### Nullability & Type Arguments
 
 **In Kotlin:** `Any` is the root, as `Object` is in Java.
+
 **Nullable types:** Explicitly marked with `?` (e.g., `Any?`, `String?`).
+
 **Implicit upper bound**: If not specified, it defaults to `Any?`.
 
 ```kotlin
@@ -88,6 +90,7 @@ class Processor<T: Any> { /* T is guaranteed to be non-null */ }
 #### Subtyping & Type System
 
 **Subtype definition**: `B` is a subtype of `A` if it can replace `A` everywhere.
+
 **Self-subtyping**: `A` is always a subtype of itself.
 
 **_Key differences in Kotlin:_** `Int` is a subtype of `Int?`, but `Int?` is NOT a subtype of `Int`.
