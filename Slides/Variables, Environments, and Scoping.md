@@ -255,7 +255,9 @@ for (let j = 0; j < 3; j++) {
   console.log(j);
 }
 console.log(j); // ❌ ReferenceError: j is not defined
+```
 
+```js
 // Another example of Hoisting in JavaScript
 function f() {
   let x;
