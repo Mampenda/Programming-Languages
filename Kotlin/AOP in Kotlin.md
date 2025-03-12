@@ -1,6 +1,6 @@
 # Aspect-Oriented Programming (AOP)
 
-AOP is primarily used in **Java**, especially with **Spring AOP** and **AspectJ**. However, it can also be used in Kotlin, since Kotlin runs on the JVM and is compatible with Java-based AOP frameworks like Spring AOP. Kotlin developers can leverage Spring AOP annotations (`@Aspect`, `@Before`, `@After`, etc.) just like in Java.
+AOP is primarily used in **Java**, especially with **Spring AOP** and **AspectJ**. However, it can also be used in **Kotlin**, since Kotlin runs on the JVM and is compatible with Java-based AOP frameworks like Spring AOP. Kotlin developers can leverage Spring AOP annotations (`@Aspect`, `@Before`, `@After`, etc.) just like in Java.
 
 That said, AOP is **less common in Kotlin** because Kotlin favors more functional and inline approaches to handling cross-cutting concerns, such as **higher-order functions and delegated properties**.
 
@@ -93,3 +93,55 @@ In other words:
 - **Pointcut**: Intercepts all method calls in com.example package.
 - **Advice**: Logs method calls before execution.
 - **Weaving**: Spring AOP weaves the aspect at runtime.
+
+### Example: AOP in TypeScript
+
+```typescript
+// Importing necessary AOP functions and types from "ts-aspect"
+import {
+  Aspect, // Interface for defining an aspect (cross-cutting concern)
+  AspectContext, // Provides details about the intercepted method
+  Advice, // Enum for when the aspect should run (Before, After, Around, etc.)
+  addAspectToPointcut, // Function to apply an aspect to specific methods
+} from "ts-aspect";
+
+// Defining a logging aspect that will execute before method calls
+class LogAspect implements Aspect {
+  execute(ctx: AspectContext): void {
+    // Logs the method name before it gets executed
+    console.log(ctx.methodName + " was called!!!");
+  }
+}
+
+// A simple Calculator class with basic arithmetic operations
+class Calculator {
+  public add(a: number, b: number) {
+    return a + b;
+  }
+
+  public subtract(a: number, b: number) {
+    return a - b;
+  }
+
+  public divide(a: number, b: number) {
+    if (b === 0) {
+      throw new Error("Division by zero!");
+    }
+    return a / b;
+  }
+
+  public multiply(a: number, b: number) {
+    return a * b;
+  }
+}
+
+// Creating an instance of the Calculator class
+const calculator = new Calculator();
+
+// Applying the LogAspect before every method in the Calculator class
+// ".*" (regex) means all methods in the class will be intercepted
+addAspectToPointcut(calculator, ".*", Advice.Before, new LogAspect());
+
+// Calling a method, which will trigger the aspect first
+calculator.add(1, 2); // Logs "add was called!!!" before returning 3
+```

@@ -114,3 +114,55 @@ public class LoggingAspect {
 - Error handling (centralized try-catch)
 - Performance monitoring (execution time tracking)
 - Thread synchronization (prevent race conditions)
+
+### Example: AOP in TypeScript
+
+```typescript
+// Importing necessary AOP functions and types from "ts-aspect"
+import {
+  Aspect, // Interface for defining an aspect (cross-cutting concern)
+  AspectContext, // Provides details about the intercepted method
+  Advice, // Enum for when the aspect should run (Before, After, Around, etc.)
+  addAspectToPointcut, // Function to apply an aspect to specific methods
+} from "ts-aspect";
+
+// Defining a logging aspect that will execute before method calls
+class LogAspect implements Aspect {
+  execute(ctx: AspectContext): void {
+    // Logs the method name before it gets executed
+    console.log(ctx.methodName + " was called!!!");
+  }
+}
+
+// A simple Calculator class with basic arithmetic operations
+class Calculator {
+  public add(a: number, b: number) {
+    return a + b;
+  }
+
+  public subtract(a: number, b: number) {
+    return a - b;
+  }
+
+  public divide(a: number, b: number) {
+    if (b === 0) {
+      throw new Error("Division by zero!");
+    }
+    return a / b;
+  }
+
+  public multiply(a: number, b: number) {
+    return a * b;
+  }
+}
+
+// Creating an instance of the Calculator class
+const calculator = new Calculator();
+
+// Applying the LogAspect before every method in the Calculator class
+// ".*" (regex) means all methods in the class will be intercepted
+addAspectToPointcut(calculator, ".*", Advice.Before, new LogAspect());
+
+// Calling a method, which will trigger the aspect first
+calculator.add(1, 2); // Logs "add was called!!!" before returning 3
+```
